@@ -65,15 +65,35 @@ class estacionamento extends CI_Controller
 
 	public function index()
 	{
-		$query = $this->estacionamento_model->SelectByID($this->getUserCondition());
+		$query = $this->estacionamento_model->SelectByID($this->getUserCondition())->result();
 
-		if($query->num_rows() != 1){
+		//print_r($query);
+
+		/*if($query->num_rows() != 1){
 			$data = array('erro' => "Não foi possivel identificar o Usuario.");
             return $this->load->view('administrativo/dashboard-view',$data);
-        }
+        }*/
 
-        $row = $query->row();
-        $this->load->view('administrativo/dashboard-view',$row);
+        $row = $query[0];
+        //print_r($row);
+
+	    $subQuery = $this->SelectSum($row->IdEstacionamento)->row();
+
+	    $query[0]->totalUsuario = $subQuery->totalUsuario;
+	    $query[0]->totalServicos = $subQuery->totalServicos;
+	    $query[0]->totalHorario = $subQuery->totalHorario;
+	    
+	    //$row->qtdTotalVagas = $aux->qtdTotalVagas;
+	    //$row->qtdVagasDisponiveis = $aux->qtdVagasDisponiveis;
+	    //echo "<br><br><br>";
+		//print_r($query);
+		$data = array('lstUsuarios' => $query);
+
+        $this->load->view('administrativo/dashboard-view',$data);
+	}
+
+	public function SelectSum($idEstacionamento){
+		return  $this->estacionamento_model->SelectSumEstacionamento($idEstacionamento);
 	}
 
 	public function valida_email(){

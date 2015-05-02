@@ -23,25 +23,16 @@
 				<img src="/findpark/content/img/find_user.png" class="user-image img-responsive" />
 			</li>
 			<li>
-				<a class="active-menu" href="index.html"><i class="fa fa-dashboard fa-3x"></i> Painel de Controle</a>
+				<a class="active-menu" href="<?php echo base_url('estacionamento/index') ?>"><i class="fa fa-cogs fa-3x"></i> Painel de Controle</a>
 			</li>
 			<li>
-				<a href="ui.html"><i class="fa fa-desktop fa-3x"></i> UI Elements</a>
+				<a href="ui.html"><i class="fa fa-home fa-3x"></i>Estacionamento</a>
 			</li>
 			<li>
-				<a href="tab-panel.html"><i class="fa fa-qrcode fa-3x"></i> Tabs & Panels</a>
+				<a href="tab-panel.html"><i class="fa fa-users fa-3x"></i>Usuarios</a>
 			</li>
 			<li>
-				<a href="chart.html"><i class="fa fa-bar-chart-o fa-3x"></i> Morris Charts</a>
-			</li>
-			<li>
-				<a href="table.html"><i class="fa fa-table fa-3x"></i> Table Examples</a>
-			</li>
-			<li>
-				<a href="form.html"><i class="fa fa-edit fa-3x"></i> Forms </a>
-			</li>
-			<li>
-				<a href="blank.html"><i class="fa fa-square-o fa-3x"></i> Blank Page</a>
+				<a href="chart.html"><i class="fa fa-question-circle fa-3x"></i>Ajuda</a>
 			</li>
 		</ul>
 	</div>

@@ -22,15 +22,56 @@ class Estacionamento_model extends CI_Model implements IRepository {
     	if($resultID <= 0)
     		return FALSE;
 
-    	$query = $this->db->select('usuario_estacionamento.*, estacionamento.*')
+    	$query = $this->db->select('usuario_estacionamento.*, estacionamento.*,  
+    			  servicos.IdServico, servicos.descricaoServico ,servicos.preco, 
+    			  vagas.qtdVagasDeficientes, vagas.qtdVagasCarros, vagas.qtdVagasMoto, vagas.qtdTotalVagas, vagas.qtdVagasDisponiveis,
+    			  preco.Descricao, preco.PrecoCarro, preco.PrecoMoto,
+    			  horario.descricao, horario.horaInicio, horario.horaFim')
 				 ->from('estacionamento')
 				 ->join('usuario_estacionamento', 'estacionamento.IdEstacionamento = usuario_estacionamento.IdEstacionamento')
+				 ->join('servicos', 'estacionamento.IdEstacionamento = servicos.IdEstacionamento','left')
+				 ->join('vagas', 'estacionamento.IdEstacionamento = vagas.IdEstacionamento','left')
+				 ->join('preco', 'estacionamento.IdEstacionamento = preco.IdEstacionamento','left')
+				 ->join('horario', 'estacionamento.IdEstacionamento = horario.IdEstacionamento','left')
 				 ->where('usuario_estacionamento.IdUsuario', $resultID)
 				 ->get();
 
 		return $query;
     }
 	
+    public function SelectSumEstacionamento($data = NULL){
+
+    	if($data == NULL)
+    		throw new Exception("Paramentro nulo ou vazio");
+
+		$query = "SELECT ";
+		$query .= "(SELECT COUNT(usuario_estacionamento.idusuario)  from usuario_estacionamento ";
+		$query .= "WHERE usuario.idusuario = usuario_estacionamento.idusuario) as totalUsuario, ";
+		$query .= "(SELECT COUNT(servicos.idestacionamento) FROM servicos ";
+		$query .= "WHERE servicos.idestacionamento = estacionamento.idestacionamento) as totalServicos, ";
+		$query .= "(SELECT COUNT(horario.idestacionamento) FROM horario ";
+		$query .= "WHERE horario.idestacionamento = estacionamento.idestacionamento) as totalHorario, ";
+		$query .= "qtdTotalVagas, qtdVagasDisponiveis ";
+		$query .= "FROM usuario, estacionamento ";
+		$query .= "LEFT JOIN vagas ON vagas.idestacionamento = estacionamento.idestacionamento ";
+		$query .= "WHERE estacionamento.idestacionamento = ? ";
+		$result = $this->db->query($query, $data);
+
+		//Verificando se há registro
+		if($result->num_rows() == 1){
+			$aux = $result->row()->totalUsuario;
+
+			if($aux != 0){
+				return $result;
+			}
+			else{
+				return FALSE;
+			}
+		}
+		else
+			return FALSE; 
+    }
+
     public function Update($condition = null){
 	
 		if($condition == null)
