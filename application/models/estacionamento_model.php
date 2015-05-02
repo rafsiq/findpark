@@ -39,7 +39,7 @@ class Estacionamento_model extends CI_Model implements IRepository {
 		return $query;
     }
 	
-    public function SelectSumEstacionamento($data = NULL){
+    public function SelectSubQueryEstacionamento($data = NULL){
 
     	if($data == NULL)
     		throw new Exception("Paramentro nulo ou vazio");
@@ -51,6 +51,8 @@ class Estacionamento_model extends CI_Model implements IRepository {
 		$query .= "WHERE servicos.idestacionamento = estacionamento.idestacionamento) as totalServicos, ";
 		$query .= "(SELECT COUNT(horario.idestacionamento) FROM horario ";
 		$query .= "WHERE horario.idestacionamento = estacionamento.idestacionamento) as totalHorario, ";
+		$query .= "(SELECT COUNT(preco.idestacionamento) FROM preco ";
+		$query .= "WHERE preco.idestacionamento = estacionamento.idestacionamento) as totalPreco, ";
 		$query .= "qtdTotalVagas, qtdVagasDisponiveis ";
 		$query .= "FROM usuario, estacionamento ";
 		$query .= "LEFT JOIN vagas ON vagas.idestacionamento = estacionamento.idestacionamento ";
@@ -71,6 +73,32 @@ class Estacionamento_model extends CI_Model implements IRepository {
 		else
 			return FALSE; 
     }
+
+    public function SelectServicos($data = NULL){
+
+    	if($data == NULL)
+    		throw new Exception("Paramentro nulo ou vazio");
+
+		$query = "SELECT * FROM servicos ";
+		$query .= "WHERE idestacionamento = ? ";
+
+		$result = $this->db->query($query, $data);
+
+		return $result; 
+    }
+
+	 public function SelectPrecos($data = NULL){
+
+    	if($data == NULL)
+    		throw new Exception("Paramentro nulo ou vazio");
+
+		$query = "SELECT * FROM preco ";
+		$query .= "WHERE idestacionamento = ? ";
+
+		$result = $this->db->query($query, $data);
+
+		return $result; 
+    }    
 
     public function Update($condition = null){
 	

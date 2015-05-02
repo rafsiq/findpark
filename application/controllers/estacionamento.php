@@ -67,92 +67,94 @@ class estacionamento extends CI_Controller
 	{
 		$query = $this->estacionamento_model->SelectByID($this->getUserCondition())->result();
 
-		//print_r($query);
-
-		/*if($query->num_rows() != 1){
-			$data = array('erro' => "Não foi possivel identificar o Usuario.");
-            return $this->load->view('administrativo/dashboard-view',$data);
-        }*/
-
         $row = $query[0];
-        //print_r($row);
 
-	    $subQuery = $this->SelectSum($row->IdEstacionamento)->row();
+        //Buscando do BD
+        $subQuery = $this->SelectSum($row->IdEstacionamento)->row();
+        $queryServicos = $this->SelecionarServicos($row->IdEstacionamento)->result();
+        $queryPrecos = $this->SelecionarPrecos($row->IdEstacionamento)->result();
 
-	    $query[0]->totalUsuario = $subQuery->totalUsuario;
-	    $query[0]->totalServicos = $subQuery->totalServicos;
-	    $query[0]->totalHorario = $subQuery->totalHorario;
-	    
-	    //$row->qtdTotalVagas = $aux->qtdTotalVagas;
-	    //$row->qtdVagasDisponiveis = $aux->qtdVagasDisponiveis;
-	    //echo "<br><br><br>";
+        //Atribundo os valores
+        $query[0]->totalUsuario = $subQuery->totalUsuario;
+        $query[0]->totalServicos = $subQuery->totalServicos;
+        $query[0]->totalHorario = $subQuery->totalHorario;
+        $query[0]->totalPreco = $subQuery->totalPreco;
+
 		//print_r($query);
-		$data = array('lstUsuarios' => $query);
+        $data = array('lstUsuarios' => $query, 'lstServicos' => $queryServicos, 'lstPrecos' => $queryPrecos);
 
         $this->load->view('administrativo/dashboard-view',$data);
-	}
+    }
 
-	public function SelectSum($idEstacionamento){
-		return  $this->estacionamento_model->SelectSumEstacionamento($idEstacionamento);
-	}
+    public function SelectSum($idEstacionamento){
+    	return  $this->estacionamento_model->SelectSubQueryEstacionamento($idEstacionamento);
+    }
 
-	public function valida_email(){
+    public function SelecionarServicos($idEstacionamento){
+    	return  $this->estacionamento_model->SelectServicos($idEstacionamento);
+    }
 
-		if($this->getUserValidate())
-			redirect('/estacionamento/index');
+    public function SelecionarPrecos($idEstacionamento){
+    	return  $this->estacionamento_model->SelectPrecos($idEstacionamento);
+    }
+
+    public function valida_email(){
+
+    	if($this->getUserValidate())
+    		redirect('/estacionamento/index');
 
 		//Recupera o e-mail do usuario
-		$data = array('emailUser' => $this->membership_model->get_email_user($this->getUserCondition()));
+    	$data = array('emailUser' => $this->membership_model->get_email_user($this->getUserCondition()));
 
-		$this->load->view('administrativo/valida_email-view', $data);
-	}
+    	$this->load->view('administrativo/valida_email-view', $data);
+    }
 
-	public function reenviar_email(){
+    public function reenviar_email(){
 
 		//Recuperando dados USUARIO
-		$emailUser = $this->membership_model->get_email_user($this->getUserCondition());
-		$codigoEmailUser =  $this->usuario_model->SelectCodigoEmail($this->getUserCondition());
-		
+    	$emailUser = $this->membership_model->get_email_user($this->getUserCondition());
+    	$codigoEmailUser =  $this->usuario_model->SelectCodigoEmail($this->getUserCondition());
+
 		//Carregando o TEMPLATE para enviar e-mail
-		$dataEmail = array('codigo' => $codigoEmailUser);
-		$template = $this->load->view('template_email-view',$dataEmail,TRUE);
+    	$dataEmail = array('codigo' => $codigoEmailUser);
+    	$template = $this->load->view('template_email-view',$dataEmail,TRUE);
 
 		//REENVIAR E-MAIL
-		$this->email_model->EnviarEmail('Validação de Acesso ao Sistema', 'lv.lucasvin@gmail.com', $emailUser, $template);
+    	$this->email_model->EnviarEmail('Validação de Acesso ao Sistema', 'lv.lucasvin@gmail.com', $emailUser, $template);
 
-		$data = array('sendEmail' => 'E-mail enviado com sucesso');
+    	$data = array('sendEmail' => 'E-mail enviado com sucesso');
 
-		redirect('/estacionamento/index');
+    	redirect('/estacionamento/index');
 		//return $this->load->view('login/valida_email-view', $data);
-	}
+    }
 
-	public function validacao_email(){
+    public function validacao_email(){
 
-		$this->form_validation->set_rules('txtCodigoEmail', 'CODIGO', 'required');
+    	$this->form_validation->set_rules('txtCodigoEmail', 'CODIGO', 'required');
 
 		//Recupera EMAIL usuario
-		$data['emailUser']= $this->membership_model->get_email_user($this->getUserCondition());
+    	$data['emailUser']= $this->membership_model->get_email_user($this->getUserCondition());
 
 		//SE o FRM não estiver VALIDO
-		if (!$this->form_validation->run())
-			return $this->load->view('administrativo/valida_email-view', $data);
+    	if (!$this->form_validation->run())
+    		return $this->load->view('administrativo/valida_email-view', $data);
 
 		//Monta as condições para atualizar
-		$condition = array(
-			'Login' => $this->session->userdata('username'), 
-			'Email' => $this->membership_model->get_email_user($this->getUserCondition()),
-			'txtCodigoEmail' => $this->input->post());
+    	$condition = array(
+    		'Login' => $this->session->userdata('username'), 
+    		'Email' => $this->membership_model->get_email_user($this->getUserCondition()),
+    		'txtCodigoEmail' => $this->input->post());
 
 		//carregar model 
-		$query = $this->estacionamento_model->UpdateCodigoEmail($condition);
+    	$query = $this->estacionamento_model->UpdateCodigoEmail($condition);
 
-		if(!$query){
+    	if(!$query){
 			//Retornando o erro
-			$data['userInvalid'] = "O código não é válido";
+    		$data['userInvalid'] = "O código não é válido";
 
-			return $this->load->view('administrativo/valida_email-view',$data);
-		}
+    		return $this->load->view('administrativo/valida_email-view',$data);
+    	}
 
-		redirect('/estacionamento/index');
-	}
+    	redirect('/estacionamento/index');
+    }
 }

@@ -11,27 +11,13 @@
 			</tr>
 		</thead>
 		<tbody>
+			<?php for ($i=0; $i < $lstUsuarios[0]->totalPreco; $i++) { ?>
 			<tr>
-				<td> 30  minutos</td>
-				<td>R$ 2,00</td>
-				<td>R$ 1,50</td>
+				<td><?php echo $lstPrecos[$i]->Descricao ?></td>
+				<td><?php echo $lstPrecos[$i]->PrecoCarro ?></td>
+				<td><?php echo $lstPrecos[$i]->PrecoMoto ?></td>
 			</tr>
-			<tr>
-				<td> 30  minutos</td>
-				<td>R$ 2,00</td>
-				<td>R$ 1,50</td>
-			</tr>
-			<tr>
-				<td> 30  minutos</td>
-				<td>R$ 2,00</td>
-				<td>R$ 1,50</td>
-			</tr>
-			<tr>
-				<td> 30  minutos</td>
-				<td>R$ 2,00</td>
-				<td>R$ 1,50</td>
-			</tr>
-
 		</tbody>
+		<?php } ?>
 	</table>
 </div>

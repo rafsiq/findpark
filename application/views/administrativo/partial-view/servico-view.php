@@ -12,8 +12,8 @@
 		<tbody>
 			<?php for ($i=0; $i < $lstUsuarios[0]->totalServicos; $i++) { ?>
 			<tr>
-				<td><?php echo $lstUsuarios[$i]->descricaoServico ?></td>
-				<td>R$ <?php echo $lstUsuarios[$i]->preco ?></td>
+				<td><?php echo $lstServicos[$i]->descricaoServico ?></td>
+				<td>R$ <?php echo $lstServicos[$i]->preco ?></td>
 			</tr>
 			<?php } ?>
 		</tbody>
