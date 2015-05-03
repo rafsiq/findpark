@@ -44,7 +44,9 @@ class Estacionamento_model extends CI_Model implements IRepository {
     		throw new Exception("Paramentro nulo ou vazio");
 
     	$this->load->model('usuario_model');
-    	$resultID = $this->usuario_model->SelectById($data);
+    	$resultID = $this->usuario_model->SelectByIdEstacionamento($data);
+
+    	echo $resultID;
 
     	if($resultID <= 0)
     		return FALSE;

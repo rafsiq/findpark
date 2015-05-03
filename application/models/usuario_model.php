@@ -26,6 +26,21 @@ class Usuario_model extends CI_Model implements IRepository {
         }
 	}
 
+	public function SelectByIdEstacionamento($condition = NULL){
+		if($condition == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		//Montando QUERY
+        $sql = "SELECT * FROM usuario INNER JOIN usuario_estacionamento ON usuario_estacionamento.IdUsuario = usuario.IdUsuario WHERE login = ? OR email = ? ";
+        $result = $this->db->query($sql, $condition);
+
+        //Verifica se há registro
+        if($result->num_rows() == 1){
+            $row = $result->row();
+            return $row->IdEstacionamento;
+        }
+	}
+
 	public function SelectCodigoEmail($condition = NULL){
 		if($condition == null)
 			throw new Exception("Paramentro nulo ou vazio");

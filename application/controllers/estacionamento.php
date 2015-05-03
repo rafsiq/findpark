@@ -100,6 +100,8 @@ class estacionamento extends CI_Controller
 	public function cadastro_horario()	{
 
 		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+		print_r($queryEmpresa);
+		echo $queryEmpresa->IdEstacionamento;
 		$queryHorario = $this->estacionamento_model->SelectHorario($queryEmpresa->IdEstacionamento)->result();
 
 		$data = array('lstHorario' => $queryHorario);
