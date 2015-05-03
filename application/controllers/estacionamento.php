@@ -81,6 +81,7 @@ class estacionamento extends CI_Controller
 		$this->setIdEstacionamento($row->IdEstacionamento);
         //Buscando do BD
 		$subQuery = $this->SelectSum($row->IdEstacionamento)->row();
+
 		$queryServicos = $this->SelecionarServicos($row->IdEstacionamento)->result();
 		$queryPrecos = $this->SelecionarPrecos($row->IdEstacionamento)->result();
 
@@ -330,7 +331,7 @@ class estacionamento extends CI_Controller
 	}
 
 	public function SelectSum($idEstacionamento){
-		return  $this->estacionamento_model->SelectSubQueryEstacionamento($idEstacionamento);
+		return$this->estacionamento_model->SelectSubQueryEstacionamento($idEstacionamento);
 	}
 
 	public function SelecionarServicos($idEstacionamento){

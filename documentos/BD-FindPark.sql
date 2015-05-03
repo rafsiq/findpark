@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `estacionamento` (
   `Latitude` varchar(150) NOT NULL,
   `Longitude` varchar(150) NOT NULL,
   PRIMARY KEY (`IdEstacionamento`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `usuario` (
   `IdUsuario` int(11) NOT NULL AUTO_INCREMENT,
@@ -54,47 +54,69 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   PRIMARY KEY (`IdUsuario`),
   UNIQUE KEY `login` (`Login`),
   UNIQUE KEY `email` (`Email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `horario` (
+  `IdHorario` int(11) NOT NULL AUTO_INCREMENT,
+  `IdEstacionamento` int(11) NOT NULL,
+  `descricao` varchar(100) DEFAULT NULL,
+  `horaInicio` varchar(100) DEFAULT NULL,
+  `horaFim` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`IdHorario`),
+  KEY `IdEstacionamento` (`IdEstacionamento`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `usuario_estacionamento` (
   `IdEstacionamento` int(11) NOT NULL,
   `IdUsuario` int(11) NOT NULL,
   `DtCriacao` date NOT NULL,
   `FlgProprietario` tinyint(4) NOT NULL,
-  FOREIGN KEY (IdEstacionamento) REFERENCES estacionamento(IdEstacionamento),
-  FOREIGN KEY (IdUsuario) REFERENCES usuario(IdUsuario)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `IdEstacionamento` (`IdEstacionamento`),
+  KEY `IdUsuario` (`IdUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `findpark`.`preco` (
-  `IdEstacionamento` INT NOT NULL,
-  `descricao` VARCHAR(100) NULL,
-   preco DECIMAL(5,2) NOT NULL,
-   FOREIGN KEY (IdEstacionamento) REFERENCES estacionamento(IdEstacionamento))
-ENGINE = InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `preco` (
+  `IdPreco` int(11) NOT NULL AUTO_INCREMENT,
+  `IdEstacionamento` int(11) NOT NULL,
+  `Descricao` varchar(100) DEFAULT NULL,
+  `PrecoCarro` decimal(5,2) NOT NULL,
+  `PrecoMoto` decimal(5,2) NOT NULL,
+  PRIMARY KEY (`IdPreco`),
+  KEY `IdEstacionamento` (`IdEstacionamento`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `findpark`.`servicos` (
-  `IdServico` INT NOT NULL AUTO_INCREMENT,
-  `IdEstacionamento` INT NOT NULL,
-  `descricao` VARCHAR(100) NULL,
-  `preco` DECIMAL(5,2) NOT NULL,
+CREATE TABLE IF NOT EXISTS `servicos` (
+  `IdServico` int(11) NOT NULL AUTO_INCREMENT,
+  `IdEstacionamento` int(11) NOT NULL,
+  `descricaoServico` varchar(100) DEFAULT NULL,
+  `preco` decimal(5,2) NOT NULL,
   PRIMARY KEY (`IdServico`),
-  FOREIGN KEY (IdEstacionamento) REFERENCES estacionamento(IdEstacionamento))
-ENGINE = InnoDB DEFAULT CHARSET=utf8;
+  KEY `IdEstacionamento` (`IdEstacionamento`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `findpark`.`vagas` (
-  `IdEstacionamento` INT NOT NULL,
-  `qtdVagas` INT(5) NOT NULL,
-   qtdVagasDisponiveis INT(11) NOT NULL,
-   FOREIGN KEY (IdEstacionamento) REFERENCES estacionamento(IdEstacionamento))
-ENGINE = InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `vagas` (
+  `IdEstacionamento` int(11) NOT NULL,
+  `qtdVagasDeficientes` int(5) NOT NULL,
+  `qtdVagasCarros` int(5) NOT NULL,
+  `qtdVagasMoto` int(5) NOT NULL,
+  `qtdTotalVagas` int(5) NOT NULL,
+  `qtdVagasDisponiveis` int(5) NOT NULL,
+  KEY `IdEstacionamento` (`IdEstacionamento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `horario`
+  ADD CONSTRAINT `horario_ibfk_1` FOREIGN KEY (`IdEstacionamento`) REFERENCES `estacionamento` (`IdEstacionamento`);
+  
+ALTER TABLE `preco`
+  ADD CONSTRAINT `preco_ibfk_1` FOREIGN KEY (`IdEstacionamento`) REFERENCES `estacionamento` (`IdEstacionamento`);
+  
+ALTER TABLE `servicos`
+  ADD CONSTRAINT `servicos_ibfk_1` FOREIGN KEY (`IdEstacionamento`) REFERENCES `estacionamento` (`IdEstacionamento`);
+  
+ALTER TABLE `usuario_estacionamento`
+  ADD CONSTRAINT `usuario_estacionamento_ibfk_1` FOREIGN KEY (`IdEstacionamento`) REFERENCES `estacionamento` (`IdEstacionamento`),
+  ADD CONSTRAINT `usuario_estacionamento_ibfk_2` FOREIGN KEY (`IdUsuario`) REFERENCES `usuario` (`IdUsuario`);
+  
+ALTER TABLE `vagas`
+  ADD CONSTRAINT `vagas_ibfk_1` FOREIGN KEY (`IdEstacionamento`) REFERENCES `estacionamento` (`IdEstacionamento`);
 
-USE `findpark`;
-INSERT INTO `usuario` (`IdUsuario`, `Nome`, `cpf`, `Rua`, `Numero`, `Bairro`, `Cidade`, `UF`, `Complemento`, `Telefone`, `cep`, `Email`, `Login`, `Senha`, `FlgAtivo`, `CodigoEmail`, `FlgValido`) VALUES
-(1, 'ADMIN', '11432712399', 'Rua alvares cabral', 93, 'Botafogo (Justinópolis)', 'Ribeirão das Neves', 'MG', '', '', '33900872', 'lucasvp29@hotmail.com', 'ADMIN', 'ef818d0d90a5c8add0ea386db333c94e', 0, 'vg7rjb', 0);
-
-INSERT INTO `estacionamento` (`IdEstacionamento`, `NomeFantasia`, `DsRazaoSocial`, `cnpj`, `cep`, `Rua`, `Numero`, `Bairro`, `Cidade`, `UF`, `Complemento`, `Telefone`, `Imagem`, `FlgAtivo`, `Latitude`, `Longitude`) VALUES
-(1, 'Estaciona Fácil LTDA', 'Estacionamento Fácil Limitada de Belo Horizonte', '17.155.730/0001-64', '30.170-120', 'Rua Curitiba', 561, 'Centro', 'Belo Horizonte', 'MG', '', '', NULL, 0, '-19.9176794', '-43.9408332');
-
-INSERT INTO `usuario_estacionamento` (`IdEstacionamento`, `IdUsuario`, `DtCriacao`, `FlgProprietario`) VALUES
-(1, 1, '2015-04-29', 1);

@@ -62,7 +62,7 @@ class Estacionamento_model extends CI_Model implements IRepository {
     	if($data == NULL)
     		throw new Exception("Paramentro nulo ou vazio");
 
-		$query = "SELECT ";
+		$query = "SELECT DISTINCT";
 		$query .= "(SELECT COUNT(usuario_estacionamento.idusuario)  from usuario_estacionamento ";
 		$query .= "WHERE usuario.idusuario = usuario_estacionamento.idusuario) as totalUsuario, ";
 		$query .= "(SELECT COUNT(servicos.idestacionamento) FROM servicos ";
