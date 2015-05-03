@@ -38,6 +38,24 @@ class Estacionamento_model extends CI_Model implements IRepository {
 
 		return $query;
     }
+
+    public function SelectByIdEmpresa($data = NULL){
+    	if($data == NULL)
+    		throw new Exception("Paramentro nulo ou vazio");
+
+    	$this->load->model('usuario_model');
+    	$resultID = $this->usuario_model->SelectById($data);
+
+    	if($resultID <= 0)
+    		return FALSE;
+
+    	$query = "SELECT * FROM estacionamento ";
+		$query .= "WHERE idestacionamento = ? ";
+
+		$result = $this->db->query($query, $resultID);
+
+		return $result; 
+    }
 	
     public function SelectSubQueryEstacionamento($data = NULL){
 
@@ -87,7 +105,7 @@ class Estacionamento_model extends CI_Model implements IRepository {
 		return $result; 
     }
 
-	 public function SelectPrecos($data = NULL){
+	public function SelectPrecos($data = NULL){
 
     	if($data == NULL)
     		throw new Exception("Paramentro nulo ou vazio");
@@ -98,13 +116,50 @@ class Estacionamento_model extends CI_Model implements IRepository {
 		$result = $this->db->query($query, $data);
 
 		return $result; 
-    }    
+    }
 
-    public function Update($condition = null){
+    public function SelectHorario($data = NULL){
+
+    	if($data == NULL)
+    		throw new Exception("Paramentro nulo ou vazio");
+
+		$query = "SELECT * FROM horario ";
+		$query .= "WHERE idestacionamento = ? ";
+
+		$result = $this->db->query($query, $data);
+
+		return $result; 
+    }
+
+    public function SelectVagas($data = NULL){
+
+    	if($data == NULL)
+    		throw new Exception("Paramentro nulo ou vazio");
+
+		$query = "SELECT * FROM vagas ";
+		$query .= "WHERE idestacionamento = ? ";
+
+		$result = $this->db->query($query, $data);
+
+		return $result; 
+    }
+
+    public function Update($data = null, $condition = null){
 	
 		if($condition == null)
 			throw new Exception("Paramentro nulo ou vazio");
-		
+
+		//Montando QUERY
+		$sql = "UPDATE estacionamento SET NomeFantasia = '".$data['txtNmFantasia']."', DsRazaoSocial = '".$data['txtDsRazaoSocial']."', ";
+		$sql .="cnpj = '".$data['txtCnpj']."', cep = '".$data['txtCepEmpresa']."', Rua = '".$data['txtRuaEmpresa']."', ";
+		$sql .="Numero ='".$data['txtNumEmpresa']."', Bairro = '".$data['txtBairroEmpresa']."', Cidade = '".$data['txtCidadeEmpresa']."', ";
+		$sql .= "UF = '".$data['txtUfEmpresa']."', Complemento = '".$data['txtCompEmpresa']."', ";
+		$sql .= "Telefone = '".$data['txtTelEmpresa']."', Latitude = '".$data['txtLatitude']."', ";
+		$sql .= "Longitude = '".$data['txtLongitude']."' ";
+		$sql .="WHERE IdEstacionamento = ?";
+		//PARAMETERS
+		//Executando QUERY
+		$this->db->query($sql,$condition);
 	}
     
 	public function UpdateCodigoEmail($condition = null){
@@ -131,8 +186,34 @@ class Estacionamento_model extends CI_Model implements IRepository {
 	public function Delete($condition = null){
 	
 		if($condition == null)
+			throw new Exception("Paramentro nulo ou vazio");	
+	}
+
+	public function DeleteHorario($condition = null){
+	
+		if($condition == null)
 			throw new Exception("Paramentro nulo ou vazio");
-			
+
+		$this->db->where('IdHorario', $condition)->delete('horario');
+			//redirect('usuario/details');
+	}
+	
+	public function DeleteServico($condition = null){
+	
+		if($condition == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$this->db->where('IdServico', $condition)->delete('servicos');
+		//redirect('usuario/details');
+	}
+
+	public function DeletePreco($condition = null){
+	
+		if($condition == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$this->db->where('IdPreco', $condition)->delete('preco');
+			//redirect('usuario/details');
 	}
 	
 	public function Insert($data = NULL){
@@ -153,4 +234,29 @@ class Estacionamento_model extends CI_Model implements IRepository {
 		//Executando QUERY
 		$this->db->query($sql);
 	}    
+
+	public function InsertHorarioFuncionamento($data = NULL){
+		if($data == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$this->db->insert('horario',$data);
+		//redirect("usuario/index");
+	}  
+
+	public function InsertServico($data = NULL){
+		if($data == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$this->db->insert('servicos',$data);
+		//redirect("usuario/index");
+	}
+
+	public function InsertPreco($data = NULL){
+		if($data == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$this->db->insert('preco',$data);
+		//redirect("usuario/index");
+	}    
+	
 }

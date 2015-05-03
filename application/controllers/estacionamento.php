@@ -6,8 +6,17 @@ class estacionamento extends CI_Controller
 
 	protected $userValidate;
 	protected $userCondition;
+	protected $idEstacionamento;
 
 	//Propriedades da classe
+	public function getIdEstacionamento(){
+		return $this->idEstacionamento;
+	}
+
+	public function setIdEstacionamento($_id){
+		$this->idEstacionamento = $_id;
+	}
+
 	public function getUserValidate(){
 		return $this->userValidate;
 	}
@@ -67,94 +76,249 @@ class estacionamento extends CI_Controller
 	{
 		$query = $this->estacionamento_model->SelectByID($this->getUserCondition())->result();
 
-        $row = $query[0];
+		$row = $query[0];
 
+		$this->setIdEstacionamento($row->IdEstacionamento);
         //Buscando do BD
-        $subQuery = $this->SelectSum($row->IdEstacionamento)->row();
-        $queryServicos = $this->SelecionarServicos($row->IdEstacionamento)->result();
-        $queryPrecos = $this->SelecionarPrecos($row->IdEstacionamento)->result();
+		$subQuery = $this->SelectSum($row->IdEstacionamento)->row();
+		$queryServicos = $this->SelecionarServicos($row->IdEstacionamento)->result();
+		$queryPrecos = $this->SelecionarPrecos($row->IdEstacionamento)->result();
 
         //Atribundo os valores
-        $query[0]->totalUsuario = $subQuery->totalUsuario;
-        $query[0]->totalServicos = $subQuery->totalServicos;
-        $query[0]->totalHorario = $subQuery->totalHorario;
-        $query[0]->totalPreco = $subQuery->totalPreco;
+		$query[0]->totalUsuario = $subQuery->totalUsuario;
+		$query[0]->totalServicos = $subQuery->totalServicos;
+		$query[0]->totalHorario = $subQuery->totalHorario;
+		$query[0]->totalPreco = $subQuery->totalPreco;
 
 		//print_r($query);
-        $data = array('lstUsuarios' => $query, 'lstServicos' => $queryServicos, 'lstPrecos' => $queryPrecos);
+		$data = array('lstUsuarios' => $query, 'lstServicos' => $queryServicos, 'lstPrecos' => $queryPrecos);
 
-        $this->load->view('administrativo/dashboard-view',$data);
-    }
+		$this->load->view('administrativo/dashboard-view',$data);
+	}
 
-    public function SelectSum($idEstacionamento){
-    	return  $this->estacionamento_model->SelectSubQueryEstacionamento($idEstacionamento);
-    }
+	public function cadastro_Horario(){
 
-    public function SelecionarServicos($idEstacionamento){
-    	return  $this->estacionamento_model->SelectServicos($idEstacionamento);
-    }
+		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+		$queryHorario = $this->estacionamento_model->SelectHorario($queryEmpresa->IdEstacionamento)->result();
 
-    public function SelecionarPrecos($idEstacionamento){
-    	return  $this->estacionamento_model->SelectPrecos($idEstacionamento);
-    }
+		$data = array('lstHorario' => $queryHorario);
 
-    public function valida_email(){
+		//print_r($data);
+		$this->load->view('administrativo/cadastro_Horario-view', $data);
+	}
 
-    	if($this->getUserValidate())
-    		redirect('/estacionamento/index');
+	public function cadastro_Servico(){
 
-		//Recupera o e-mail do usuario
-    	$data = array('emailUser' => $this->membership_model->get_email_user($this->getUserCondition()));
+		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+		$queryServico = $this->estacionamento_model->SelectServicos($queryEmpresa->IdEstacionamento)->result();
 
-    	$this->load->view('administrativo/valida_email-view', $data);
-    }
+		$data = array('lstServicos' => $queryServico);
 
-    public function reenviar_email(){
+		//print_r($data);
+		$this->load->view('administrativo/cadastro_Servico-view', $data);
+	}
 
-		//Recuperando dados USUARIO
-    	$emailUser = $this->membership_model->get_email_user($this->getUserCondition());
-    	$codigoEmailUser =  $this->usuario_model->SelectCodigoEmail($this->getUserCondition());
+	public function cadastro_Preco(){
 
-		//Carregando o TEMPLATE para enviar e-mail
-    	$dataEmail = array('codigo' => $codigoEmailUser);
-    	$template = $this->load->view('template_email-view',$dataEmail,TRUE);
+		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+		$queryPreco = $this->estacionamento_model->SelectPrecos($queryEmpresa->IdEstacionamento)->result();
 
-		//REENVIAR E-MAIL
-    	$this->email_model->EnviarEmail('Validação de Acesso ao Sistema', 'lv.lucasvin@gmail.com', $emailUser, $template);
+		$data = array('lstPreco' => $queryPreco);
 
-    	$data = array('sendEmail' => 'E-mail enviado com sucesso');
+		//print_r($data);
+		$this->load->view('administrativo/cadastro_Preco-view', $data);
+	}
 
-    	redirect('/estacionamento/index');
-		//return $this->load->view('login/valida_email-view', $data);
-    }
+	public function cadastro_Vaga(){
 
-    public function validacao_email(){
+		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+		$queryVaga = $this->estacionamento_model->SelectVagas($queryEmpresa->IdEstacionamento)->result();
 
-    	$this->form_validation->set_rules('txtCodigoEmail', 'CODIGO', 'required');
+		$data = array('lstVaga' => $queryVaga);
 
-		//Recupera EMAIL usuario
-    	$data['emailUser']= $this->membership_model->get_email_user($this->getUserCondition());
+		//print_r($data);
+		$this->load->view('administrativo/cadastro_Vaga-view', $data);
+	}
 
-		//SE o FRM não estiver VALIDO
-    	if (!$this->form_validation->run())
-    		return $this->load->view('administrativo/valida_email-view', $data);
+	public function POST_cadastro_Horario(){
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+
+		$data = elements(array('descricao','horaInicio','horaFim'),$this->input->post());
+
+		$data['IdEstacionamento'] = $query->IdEstacionamento;
+
+		$this->estacionamento_model->InsertHorarioFuncionamento($data);
+		//$this->load->view('administrativo/cadastro_Horario-view', $query);
+
+		redirect('estacionamento/cadastro_Horario');
+	}
+
+	public function POST_cadastro_Servico(){
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+
+		$data = elements(array('descricaoServico','preco'),$this->input->post());
+
+		$data['IdEstacionamento'] = $query->IdEstacionamento;
+
+		$this->estacionamento_model->InsertServico($data);
+		//$this->load->view('administrativo/cadastro_Horario-view', $query);
+
+		redirect('estacionamento/cadastro_Servico');
+	}
+
+	public function POST_cadastro_Preco(){
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+
+		$data = elements(array('descricao','PrecoCarro','PrecoMoto'),$this->input->post());
+
+		$data['IdEstacionamento'] = $query->IdEstacionamento;
+
+		$this->estacionamento_model->InsertPreco($data);
+		//$this->load->view('administrativo/cadastro_Horario-view', $query);
+
+		redirect('estacionamento/cadastro_Preco');
+	}
+
+	public function excluir_Horario(){
+
+		$IdHorario= $this->uri->segment(3);
+
+		if($IdHorario == null)
+			return false;
+
+		$this->estacionamento_model->DeleteHorario($IdHorario);
+
+		redirect('estacionamento/cadastro_Horario');
+	}
+
+	public function excluir_Servico(){
+
+		$IdServico= $this->uri->segment(3);
+
+		if($IdServico == null)
+			return false;
+
+		$this->estacionamento_model->DeleteServico($IdServico);
+
+		redirect('estacionamento/cadastro_Servico');
+	}
+
+	public function excluir_Preco(){
+
+		$IdPreco= $this->uri->segment(3);
+
+		if($IdPreco == null)
+			return false;
+
+		$this->estacionamento_model->DeletePreco($IdPreco);
+
+		redirect('estacionamento/cadastro_Preco');
+	}
+
+	public function details(){
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+
+		$this->load->view('administrativo/details', $query);
+	}
+
+	public function salvarEdicaoEmpresa(){
+
+		//Preenchendo um ARRAY 
+		$dataEstacionamento = elements(array('txtNmFantasia', 'txtDsRazaoSocial', 'txtCnpj', 'txtCepEmpresa', 'txtRuaEmpresa', 'txtNumEmpresa', 
+			'txtBairroEmpresa', 'txtCidadeEmpresa','txtUfEmpresa', 'txtCompEmpresa', 'txtTelEmpresa', 'txtLatitude', 'txtLongitude'),$this->input->post());
+
+		//OPEN TRANSACTION
+		$this->db->trans_begin();
 
 		//Monta as condições para atualizar
-    	$condition = array(
-    		'Login' => $this->session->userdata('username'), 
-    		'Email' => $this->membership_model->get_email_user($this->getUserCondition()),
-    		'txtCodigoEmail' => $this->input->post());
+		$condition = array('IdEstacionamento' => $this->input->post('txtId'));
+
+		$this->estacionamento_model->Update($dataEstacionamento, $condition);
+
+		if ($this->db->trans_status() === FALSE){
+			//FAIL TRANSATION
+			$this->db->trans_rollback();
+
+			//Retornando o erro
+			$error['erro'] = "Não foi possivel concluir a operação.";
+			return $this->load->view('administrativo/details',$error);
+		}
+		else{
+			//SUCESS TRANSACTION
+			$this->db->trans_commit();
+			echo "sucesso";
+		}
+	}
+
+	public function SelectSum($idEstacionamento){
+		return  $this->estacionamento_model->SelectSubQueryEstacionamento($idEstacionamento);
+	}
+
+	public function SelecionarServicos($idEstacionamento){
+		return  $this->estacionamento_model->SelectServicos($idEstacionamento);
+	}
+
+	public function SelecionarPrecos($idEstacionamento){
+		return  $this->estacionamento_model->SelectPrecos($idEstacionamento);
+	}
+
+	public function valida_email(){
+
+		if($this->getUserValidate())
+			redirect('/estacionamento/index');
+
+		//Recupera o e-mail do usuario
+		$data = array('emailUser' => $this->membership_model->get_email_user($this->getUserCondition()));
+
+		$this->load->view('administrativo/valida_email-view', $data);
+	}
+
+	public function reenviar_email(){
+
+		//Recuperando dados USUARIO
+		$emailUser = $this->membership_model->get_email_user($this->getUserCondition());
+		$codigoEmailUser =  $this->usuario_model->SelectCodigoEmail($this->getUserCondition());
+
+		//Carregando o TEMPLATE para enviar e-mail
+		$dataEmail = array('codigo' => $codigoEmailUser);
+		$template = $this->load->view('template_email-view',$dataEmail,TRUE);
+
+		//REENVIAR E-MAIL
+		$this->email_model->EnviarEmail('Validação de Acesso ao Sistema', 'lv.lucasvin@gmail.com', $emailUser, $template);
+
+		$data = array('sendEmail' => 'E-mail enviado com sucesso');
+
+		redirect('/estacionamento/index');
+		//return $this->load->view('login/valida_email-view', $data);
+	}
+
+	public function validacao_email(){
+
+		$this->form_validation->set_rules('txtCodigoEmail', 'CODIGO', 'required');
+
+		//Recupera EMAIL usuario
+		$data['emailUser']= $this->membership_model->get_email_user($this->getUserCondition());
+
+		//SE o FRM não estiver VALIDO
+		if (!$this->form_validation->run())
+			return $this->load->view('administrativo/valida_email-view', $data);
+
+		//Monta as condições para atualizar
+		$condition = array(
+			'Login' => $this->session->userdata('username'), 
+			'Email' => $this->membership_model->get_email_user($this->getUserCondition()),
+			'txtCodigoEmail' => $this->input->post());
 
 		//carregar model 
-    	$query = $this->estacionamento_model->UpdateCodigoEmail($condition);
+		$query = $this->estacionamento_model->UpdateCodigoEmail($condition);
 
-    	if(!$query){
+		if(!$query){
 			//Retornando o erro
-    		$data['userInvalid'] = "O código não é válido";
+			$data['userInvalid'] = "O código não é válido";
 
-    		return $this->load->view('administrativo/valida_email-view',$data);
-    	}
+			return $this->load->view('administrativo/valida_email-view',$data);
+		}
 
-    	redirect('/estacionamento/index');
-    }
+		redirect('/estacionamento/index');
+	}
 }

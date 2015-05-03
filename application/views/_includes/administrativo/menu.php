@@ -26,7 +26,22 @@
 				<a class="active-menu" href="<?php echo base_url('estacionamento/index') ?>"><i class="fa fa-cogs fa-3x"></i> Painel de Controle</a>
 			</li>
 			<li>
-				<a href="ui.html"><i class="fa fa-home fa-3x"></i>Estacionamento</a>
+				<a href="#"><i class="fa fa-home fa-3x"></i>Estacionamento<span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level">
+					<li>
+						<a href="<?php echo base_url('estacionamento/cadastro_Horario') ?>">Horário de Funcionamento</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('estacionamento/cadastro_Servico') ?>">Serviços</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('estacionamento/cadastro_Preco') ?>">Tabela de preços</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('estacionamento/cadastro_Vaga') ?>">Vagas</a>
+					</li>
+					
+				</ul>
 			</li>
 			<li>
 				<a href="tab-panel.html"><i class="fa fa-users fa-3x"></i>Usuarios</a>
