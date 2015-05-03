@@ -96,7 +96,7 @@ class estacionamento extends CI_Controller
 		$this->load->view('administrativo/dashboard-view',$data);
 	}
 
-	public function cadastro_Horario(){
+	public function cadastro_horario()	{
 
 		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
 		$queryHorario = $this->estacionamento_model->SelectHorario($queryEmpresa->IdEstacionamento)->result();
@@ -107,7 +107,7 @@ class estacionamento extends CI_Controller
 		$this->load->view('administrativo/cadastro_Horario-view', $data);
 	}
 
-	public function cadastro_Servico(){
+	public function cadastro_servico(){
 
 		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
 		$queryServico = $this->estacionamento_model->SelectServicos($queryEmpresa->IdEstacionamento)->result();
@@ -118,7 +118,7 @@ class estacionamento extends CI_Controller
 		$this->load->view('administrativo/cadastro_Servico-view', $data);
 	}
 
-	public function cadastro_Preco(){
+	public function cadastro_preco(){
 
 		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
 		$queryPreco = $this->estacionamento_model->SelectPrecos($queryEmpresa->IdEstacionamento)->result();
@@ -129,7 +129,7 @@ class estacionamento extends CI_Controller
 		$this->load->view('administrativo/cadastro_Preco-view', $data);
 	}
 
-	public function cadastro_Vaga(){
+	public function cadastro_vaga(){
 
 		$queryEmpresa = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
 		$queryVaga = $this->estacionamento_model->SelectVagas($queryEmpresa->IdEstacionamento)->result();
@@ -150,20 +150,22 @@ class estacionamento extends CI_Controller
 		$this->estacionamento_model->InsertHorarioFuncionamento($data);
 		//$this->load->view('administrativo/cadastro_Horario-view', $query);
 
-		redirect('estacionamento/cadastro_Horario');
+		redirect('estacionamento/cadastro_horario');
 	}
 
 	public function POST_cadastro_Servico(){
-		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
 
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
 		$data = elements(array('descricaoServico','preco'),$this->input->post());
 
 		$data['IdEstacionamento'] = $query->IdEstacionamento;
+		//$data['descricaoServico'] = $array[0];
+		//$data['preco'] = $array[1];
 
 		$this->estacionamento_model->InsertServico($data);
 		//$this->load->view('administrativo/cadastro_Horario-view', $query);
 
-		redirect('estacionamento/cadastro_Servico');
+		redirect('estacionamento/cadastro_servico','refresh');
 	}
 
 	public function POST_cadastro_Preco(){
@@ -176,7 +178,84 @@ class estacionamento extends CI_Controller
 		$this->estacionamento_model->InsertPreco($data);
 		//$this->load->view('administrativo/cadastro_Horario-view', $query);
 
-		redirect('estacionamento/cadastro_Preco');
+		redirect('estacionamento/cadastro_preco');
+	}
+
+	public function POST_cadastro_Vaga(){
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+
+		$data = elements(array('qtdVagasDeficientes','qtdVagasCarros','qtdVagasMoto'),$this->input->post());
+
+		$data['qtdTotalVagas'] = array_sum($data);
+		$data['IdEstacionamento'] = $query->IdEstacionamento;
+		$data['qtdVagasDisponiveis'] = 0;
+
+		//print_r($data);
+
+		$this->estacionamento_model->InsertVaga($data);
+		//$this->load->view('administrativo/cadastro_Horario-view', $query);
+
+		redirect('estacionamento/cadastro_vaga');
+	}
+
+	public function POST_atualizar_Vaga(){
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+
+		$data = elements(array('qtdVagasDeficientes','qtdVagasCarros','qtdVagasMoto'),$this->input->post());
+
+		$data['qtdTotalVagas'] = array_sum($data);
+		//$data['IdEstacionamento'] = $query->IdEstacionamento;
+		//$data['qtdVagasDisponiveis'] = 0;
+		$condition = $query->IdEstacionamento;
+		//print_r($data);
+
+		$this->estacionamento_model->UpdateVaga($data, $condition);
+		//$this->load->view('administrativo/cadastro_Horario-view', $query);
+
+		redirect('estacionamento/cadastro_vaga');
+	}
+
+	public function atauliza_vagas_disponiveis(){
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+
+		$data = elements(array('qtdVagasDisponiveis'),$this->input->post());
+		$condition = $query->IdEstacionamento;
+
+		$this->estacionamento_model->UpdateVagaDisponivel($data, $condition);
+		//$this->load->view('administrativo/cadastro_Horario-view', $query);
+
+		redirect('estacionamento/index');
+	}
+	
+	public function atauliza_imagem(){
+
+		$query = $this->estacionamento_model->SelectByIdEmpresa($this->getUserCondition())->row();
+		$condition = $query->IdEstacionamento;
+
+		$foto = $_FILES["Imagem"];
+
+		if(empty($foto))
+			echo "campo vazio";
+	
+		if(!preg_match("/^image\/(pjpeg|jpeg|png|gif|bmp)$/", $foto["type"])){
+			return $error[1] = "Isso não é uma imagem.";
+		} 
+
+   	 	// Pega extensão da imagem
+		preg_match("/\.(gif|bmp|png|jpg|jpeg){1}$/i", $foto["name"], $ext);
+
+		// Gera um nome único para a imagem
+		$nome_imagem = md5(uniqid(time())) . "." . $ext[1];
+
+		// Caminho de onde ficará a imagem
+		$caminho_imagem = "/findpark/content/img/estacionamentos/" . $nome_imagem;
+
+		// Faz o upload da imagem para seu respectivo caminho
+		move_uploaded_file($foto["tmp_name"],($_SERVER['DOCUMENT_ROOT'].$caminho_imagem));
+
+		$this->estacionamento_model->UpdateImagem($caminho_imagem, $condition);
+
+		redirect('estacionamento/index');
 	}
 
 	public function excluir_Horario(){

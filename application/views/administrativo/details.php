@@ -38,6 +38,23 @@
 					</strong>
 				</div>
 				<hr>
+				<br>
+				<div class="row">
+					<form method="post" enctype="multipart/form-data" name="cadastro" action="<?php echo base_url('estacionamento/atauliza_imagem') ?>" >
+						<div class="col-md-3">
+							<label>Escolha uma imagem.:</label>
+						</div>
+						<div class="col-md-7">
+							<input type="file" name="Imagem" required>
+						</div>
+						<div class="col-md-2">
+							<input type="submit" class="btn btn-f-sucess not-border-radius" value="Atualizar" />
+						</div>
+					</form>
+				</div>
+				<br>
+				<hr>
+				<br>
 				<div class="row"> 
 					<form id="frmCadastro" class="form-horizontal" role="form" method="post" action="<?php echo base_url('estacionamento/salvarEdicaoEmpresa') ?>"
 						data-toggle="validator" data-delay="0" >

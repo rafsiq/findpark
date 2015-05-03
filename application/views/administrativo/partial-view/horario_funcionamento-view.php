@@ -8,7 +8,7 @@
 		<div class="form-group">
 			<label class="col-sm-6 control-label"><?php echo $lstUsuarios[$i]->descricao ?></label>
 			<div class="col-sm-6">
-				<?php echo $lstUsuarios[$i]->horaInicio .' ás '.$lstUsuarios[$i]->horaFim ?>		
+				<?php echo $lstUsuarios[$i]->horaInicio.'h'.' ás '.$lstUsuarios[$i]->horaFim.'h' ?>		
 			</div>
 		</div>
 	</div>

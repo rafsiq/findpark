@@ -29,16 +29,19 @@
 				<a href="#"><i class="fa fa-home fa-3x"></i>Estacionamento<span class="fa arrow"></span></a>
 				<ul class="nav nav-second-level">
 					<li>
-						<a href="<?php echo base_url('estacionamento/cadastro_Horario') ?>">Horário de Funcionamento</a>
+						<a href="<?php echo base_url('estacionamento/cadastro_horario') ?>"><i class="fa fa-clock-o"></i> Funcionamento</a>
 					</li>
 					<li>
-						<a href="<?php echo base_url('estacionamento/cadastro_Servico') ?>">Serviços</a>
+						<a href="<?php echo base_url('estacionamento/cadastro_servico') ?>"><i class="fa fa-wrench"></i>&nbsp;Serviços</a>
 					</li>
 					<li>
-						<a href="<?php echo base_url('estacionamento/cadastro_Preco') ?>">Tabela de preços</a>
+						<a href="<?php echo base_url('estacionamento/cadastro_preco') ?>"><i class="fa fa-usd"></i>&nbsp;Tabela de preços</a>
 					</li>
 					<li>
-						<a href="<?php echo base_url('estacionamento/cadastro_Vaga') ?>">Vagas</a>
+						<a href="<?php echo base_url('estacionamento/cadastro_vaga') ?>"><i class="fa fa-car"></i>&nbsp;Vagas</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('estacionamento/details') ?>"><i class="fa fa-car"></i>&nbsp;informações</a>
 					</li>
 					
 				</ul>

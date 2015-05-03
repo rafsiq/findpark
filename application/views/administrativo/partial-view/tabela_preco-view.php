@@ -14,8 +14,8 @@
 			<?php for ($i=0; $i < $lstUsuarios[0]->totalPreco; $i++) { ?>
 			<tr>
 				<td><?php echo $lstPrecos[$i]->Descricao ?></td>
-				<td><?php echo $lstPrecos[$i]->PrecoCarro ?></td>
-				<td><?php echo $lstPrecos[$i]->PrecoMoto ?></td>
+				<td><?php echo 'R$ '.$lstPrecos[$i]->PrecoCarro ?></td>
+				<td><?php echo 'R$ '.$lstPrecos[$i]->PrecoMoto ?></td>
 			</tr>
 		</tbody>
 		<?php } ?>

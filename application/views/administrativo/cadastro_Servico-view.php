@@ -15,59 +15,69 @@
 			<div id="page-inner">
 				<div class="row">
 					<div class="col-md-12 text-center">
-						<h2><i class="fa fa-clock-o"></i>&nbsp;<strong>Serviços</strong></h2>
+						<h3>
+							<i class="fa fa-wrench"></i>&nbsp;<strong>Serviços</strong>
+							<hr>
+							<small>Campos obrigatórios são marcados com <i class="text-red">*</i></small>
+						</h3>
+					</div>
+				</div>
+				<div class="row" id="container-error">
+				</div>
+				<div class="row">
+					<div class="col-md-12 col-sm-12 col-xs-12 padding-top-1">
+						<form  class="form-horizontal" role="form" method="post" action="<?php echo base_url('estacionamento/POST_cadastro_Servico') ?>">
+							<div class="form-group">
+								<label class="col-md-2 control-label">Descrição&nbsp;<i class="text-red">*</i></label>
+								<div class="form-group col-md-4">
+									<input type="text" class="form-control not-border-radius" name="descricaoServico" required />
+								</div>
+								<label class="col-md-2 control-label">Preço&nbsp;<i class="text-red">*</i></label>
+								<div class="form-group col-md-2">
+									<input type="text" class="form-control not-border-radius" name="preco" id="txtPreco" required />
+								</div>
+								<div class="col-md-2">
+									<button type="submit" class="btn btn-primary not-border-radius pull-right" >Cadastrar</button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 				<hr>
 				<br>
-				<div class="row" id="container-error">
-				</div>
-				<div class="row">
-					<div class="col-md-12 col-sm-12 col-xs-12">
-						<form class="form-inline" role="form" method="post" action="<?php echo base_url('estacionamento/POST_cadastro_Servico') ?>">
-							<div class="form-group">
-								<label>Descrição</label>
-								<input type="text" class="form-control" name="descricaoServico">
-							</div>
-							<div class="form-group">
-								<label>Preço</label>
-								<input type="text" class="form-control" name="preco" >
-							</div>
-							<button type="submit" class="btn btn-default" >Cadastrar</button>
-						</form>
-					</div>
-				</div>
 				<br>
 				<div class="row">
 					<div class="col-md-12 col-sm-12 col-xs-12">
-						<div class="panel panel-back noti-box">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<td><strong>Descrição</strong></td>
-										<td><strong>Horário Inico</strong></td>
-										<td><strong>Horário Fim</strong></td>
-									</tr>
-								</thead>
-								<tbody>
-									<?php foreach ($lstServicos as $item) { ?>
-									<tr>
-										<td><?php echo $item->descricaoServico ?></td>
-										<td><?php echo $item->preco ?></td>
-										<td><?php echo anchor("estacionamento/excluir_Servico/$item->IdServico",'<i class="fa fa-times"></i>&nbsp;Excluir'); ?></td>
-									</tr>
-									<?php } ?>
-								</tbody>
-							</table>
-						</div>
+						<table class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<td><strong>Descrição</strong></td>
+									<td><strong>Horário Inico</strong></td>
+									<td><strong>Horário Fim</strong></td>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach ($lstServicos as $item) { ?>
+								<tr>
+									<td><?php echo $item->descricaoServico ?></td>
+									<td><?php echo 'R$ '.$item->preco ?></td>
+									<td><?php echo anchor("estacionamento/excluir_Servico/$item->IdServico",'<i class="fa fa-times"></i>&nbsp;Excluir'); ?></td>
+								</tr>
+								<?php } ?>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
 		</div>
-
 	</div>
 
-	<!-- Carregamento do MENU -->
+	<!-- Carregamento do FOOTER -->
 	<?php $this->load->view('_includes/administrativo/footer') ?>
+	<script type="text/javascript" src="<?php echo base_url('content/js/jquery.maskMoney.min.js') ?>"></script>
+	
+	<script type="text/javascript">
+		$("#txtPreco").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+	</script>
 </body>
 </html>

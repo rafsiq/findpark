@@ -3,6 +3,7 @@ body{font-family:'Open Sans',sans-serif}
 /*h2{ color:red; }*/
 h4{ padding-top:10px; }
 p{ font-size:16px;line-height:25px;padding-top:20px; }
+hr {  margin-top: 5px; margin-bottom: 5px; }
 
 /* Selector ID*/
 #wrapper{width:100%;background:#202020}
@@ -78,6 +79,10 @@ p{ font-size:16px;line-height:25px;padding-top:20px; }
 
 /*Style Customizer*/
 .border {border: 1px solid red;}
+.btn-f-sucess { background: #1CA01C; color: white;}
+.btn-f-sucess:hover { background: #2F832F; color: white; }
+.center { margin-left: auto; margin-right: auto; }
+
 .login { color:#fff; padding:20px 20px 5px; font-size:16px }
 .logout { width: 100px; height: 100%; padding:20px 20px 20px 20px; background: #DD0606 !important; color: white;}
 .logout:hover {  background: #A61919 !important; color: white !important; }
@@ -92,6 +97,7 @@ p{ font-size:16px;line-height:25px;padding-top:20px; }
 .text-font-1 { font-size: 15px; }
 .text-font-2 { font-size: 19px; }
 .text-font-3 { font-size: 22px; }
+.text-red { color: #a94442; }
 
 @media(min-width:768px) {
     #page-wrapper{margin:0 0 0 235px;padding:15px 30px; min-height:1200px}

@@ -27,7 +27,7 @@
 			<h3><?php echo (!isset($lstUsuarios[0]->qtdTotalVagas)) ? '0' : $lstUsuarios[0]->qtdTotalVagas ?> - Vagas</h3>
 		</div>
 		<div class="panel-footer back-footer-lilac">
-			<strong>Total de vagas</strong>
+			<strong>Capacidade Total</strong>
 		</div>
 	</div>
 </div>
@@ -35,7 +35,9 @@
 	<div class="panel panel-primary text-center no-boder bg-color-green">
 		<div class="panel-body">
 			<i class="fa fa-car fa-3x"></i>
-			<h3><?php echo (!isset($lstUsuarios[0]->qtdVagasDisponiveis)) ? '0' : $lstUsuarios[0]->qtdVagasDisponiveis ?> - Vagas</h3>
+			<h3>
+				<?php echo (!isset($lstUsuarios[0]->qtdVagasDisponiveis)) ? '0' : $lstUsuarios[0]->qtdVagasDisponiveis ?> - Vagas
+			</h3>
 		</div>
 		<div class="panel-footer back-footer-green">
 			<strong>Vagas disponivéis</strong>

@@ -181,6 +181,40 @@ class Estacionamento_model extends CI_Model implements IRepository {
 		}
 		else
 			return FALSE;  
+    }
+
+    public function UpdateVaga($data = null, $condition = null){
+
+		if($data == null || $condition == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$sql = "UPDATE vagas SET qtdVagasDeficientes = '".$data['qtdVagasDeficientes']."', qtdVagasCarros = '".$data['qtdVagasCarros']."', ";
+		$sql .= "qtdVagasMoto = '".$data['qtdVagasMoto']."', qtdTotalVagas  = '".$data['qtdTotalVagas']."' "; 
+		$sql .= "WHERE IdEstacionamento = ? ";
+
+   	 	$this->db->query($sql, $condition);
+    }	
+	
+	public function UpdateVagaDisponivel($data = null, $condition = null){
+
+		if($data == null || $condition == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$sql = "UPDATE vagas SET qtdVagasDisponiveis = '".$data['qtdVagasDisponiveis']."' ";
+		$sql .= "WHERE IdEstacionamento = ? ";
+
+   	 	$this->db->query($sql, $condition);
+    }	
+
+    public function UpdateImagem($data = null, $condition = null){
+
+		if($data == null || $condition == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$sql = "UPDATE estacionamento SET Imagem = '".$data."' ";
+		$sql .= "WHERE IdEstacionamento = ? ";
+
+   	 	$this->db->query($sql, $condition);
     }	
 	
 	public function Delete($condition = null){
@@ -257,6 +291,13 @@ class Estacionamento_model extends CI_Model implements IRepository {
 
 		$this->db->insert('preco',$data);
 		//redirect("usuario/index");
-	}    
-	
+	}   
+
+	public function InsertVaga($data = NULL){
+		if($data == null)
+			throw new Exception("Paramentro nulo ou vazio");
+
+		$this->db->insert('vagas',$data);
+		//redirect("usuario/index");
+	}
 }

@@ -6,8 +6,9 @@ class Global_model extends CI_Model {
 	public function SelectAllEstacionamentos(){
 
 		//Montando QUERY
-		$sql = "SELECT IdEstacionamento, NomeFantasia, CONCAT(Rua,', ',Numero,' - ',Bairro,', ',Cidade,' - ',UF) as 'endereco', ";
-		$sql .= "Imagem, Latitude, Longitude  FROM estacionamento";
+		$sql = "SELECT estacionamento.IdEstacionamento, NomeFantasia, CONCAT(Rua,', ',Numero,' - ',Bairro,', ',Cidade,' - ',UF) as 'endereco', ";
+		$sql .= "Imagem, Latitude, Longitude, vagas.qtdVagasDisponiveis  Vagas FROM estacionamento ";
+		$sql .= "INNER JOIN vagas ON vagas.IdEstacionamento = estacionamento.IdEstacionamento";
 
 		//Executando QUERY
 		$result = $this->db->query($sql);
