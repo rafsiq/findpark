@@ -13,8 +13,8 @@ class Email_model extends CI_Model {
 		$config['smtp_host'] = "smtp.gmail.com";
 		$config['smtp_port'] = 25;
 		$config['protocol'] = "smtp";
-		$config['smtp_user'] = "lv.lucasvin@gmail.com";
-		$config['smtp_pass'] = "@p0l0131123";
+		$config['smtp_user'] = "estacionamentos.findpark@gmail.com";
+		$config['smtp_pass'] = "faminasTIS2015";
 		$config['charset'] = "utf-8";
 		$config['mailtype'] = "html";
 		$config['newline'] = "\r\n";
